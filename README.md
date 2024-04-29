@@ -15,7 +15,7 @@ Use the script as follows:
 
 ## 1b) Split into RAM and ROM 
 
-The bash script **split_into_ram_rom.sh** creates two new memory segments labeled "mbRam" and "mbRom". 
+The bash script **split_into_ram_rom.sh** creates two new memory segments labeled "mbRAM" and "mbROM". 
 Required for the command are the linkerscript to change and a hex-value which represents the origin adress of the added memory segment. 
 The CLI call looks like the following:
 
