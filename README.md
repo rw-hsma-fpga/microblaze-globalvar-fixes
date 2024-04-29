@@ -38,6 +38,6 @@ needs to be called at the top of the main() function.
 
 The second way is to run the [make_initglobals_lib.sh](2b__init_globals__library/make_initglobals_lib.sh) script. This will compile a static library from the [init_mb_globals_lib.c](2b__init_globals__library/init_mb_globals_lib.c) source file which will automatically call the function to initialize the globals.
 
-## 3)
+## 3) Add read-only to 1b) ROM Segment
 
 In case of using 1b), it is still necessary to make the rom memory segment read-only. The complete guide is explained in [HOWTO.md](3___rdonly_addrfilter__vhdl/HOWTO.md)
