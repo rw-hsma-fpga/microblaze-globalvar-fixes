@@ -30,6 +30,16 @@ For further information on how the script works, see
 
 ## 2a) 
 
+The first way to load the new globals from the linkerscript is to include the headerfile [init_mb_globals.h](2a__init_globals__function/init_mb_globals.h). Afterwards, the function 
+```c
+void init_mb_globals(void)
+```
+needs to be called at the top of the main() function. 
+
 ## 2b) 
 
+The second way is to run the [make_initglobals_lib.sh](2b__init_globals__library/make_initglobals_lib.sh) script. This will compile a static library from the [init_mb_globals_lib.c](2b__init_globals__library/init_mb_globals_lib.c) source file which will automatically call the function to initialize the globals.
+
 ## 3)
+
+In case of using 1b), it is still necessary to make the rom memor segment read-only. The complete guide is explained in [HOWTO.md](3___rdonly_addrfilter__vhdl/HOWTO.md)
