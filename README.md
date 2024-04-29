@@ -13,8 +13,6 @@ Use the script as follows:
 ./add_load_segments.sh <linkerscript.ld> 
 ```
 
-
-
 ## 1b) Split into RAM and ROM 
 
 The bash script **split_into_ram_rom.sh** creates two new memory segments labeled "mbRam" and "mbRom". 
@@ -42,4 +40,4 @@ The second way is to run the [make_initglobals_lib.sh](2b__init_globals__library
 
 ## 3)
 
-In case of using 1b), it is still necessary to make the rom memor segment read-only. The complete guide is explained in [HOWTO.md](3___rdonly_addrfilter__vhdl/HOWTO.md)
+In case of using 1b), it is still necessary to make the rom memory segment read-only. The complete guide is explained in [HOWTO.md](3___rdonly_addrfilter__vhdl/HOWTO.md)
