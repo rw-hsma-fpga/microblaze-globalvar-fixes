@@ -97,36 +97,36 @@ old_length_hex_value="${ADDR[7]//$comma}"
 ###############################################
 
 #########################################################################################################
-#																										#
-# Explanation how new Memory Segments are calculated 													#
-# Lets take following example: We have this memory segment in our linker file							#
-# memory_segment : ORIGIN = 0x50, LENGTH = 0x7FB0														#
+#                                                                                                       #
+# Explanation how new Memory Segments are calculated                                                    #
+# Lets take following example: We have this memory segment in our linker file                           #
+# memory_segment : ORIGIN = 0x50, LENGTH = 0x7FB0                                                       #
 # This resembles the following segment:                                                                 #
-#																										#
-#         0x8000 |---------------------|   													        #         
+#                                                                                                       #
+#         0x8000 |---------------------|                                                                #         
 #                |                     |                                                                #
-#                |                     |   																#
-#                |                     |   																#
-#                |       MEMORY        |   																#
-#                |       SEGMENT       |   																#
-#                |                     |   																#
-#                |                     |   																#
-#                |                     |   																#
-#                |                     |   																#
-#           0x50 |-------------------- |   																#
+#                |                     |                                                                #
+#                |                     |                                                                #
+#                |       MEMORY        |                                                                #
+#                |       SEGMENT       |                                                                #
+#                |                     |                                                                #
+#                |                     |                                                                #
+#                |                     |                                                                #
+#                |                     |                                                                #
+#           0x50 |-------------------- |                                                                #
 #                                                                                                       #
 # Now we want split the segment into two new segments, so we have to calculate                          #
-# the new origin adress and new length of the second segment. 											#
-# For the first segment, in this case the "ROM" segment, we can copy the old origin						#
-# value 0x50, and the the new end adress from the user input value										#
-# 																										#
-# The origin value of the second segment, here the "RAM" segment, will be the above 					#
-# mentioned user input value.																			#
-# The length of the RAM segment will be calculated from the original length 							#
-# subtracted by the length of the ROM segment.															#
-# Afterwards, the end adress of the RAM segment equals it's start adress added to the 					#
-# just calculated RAM length																			#
-#                                                                                						#
+# the new origin adress and new length of the second segment.                                           #
+# For the first segment, in this case the "ROM" segment, we can copy the old origin                     #
+# value 0x50, and the the new end adress from the user input value                                      #
+#                                                                                                       #
+# The origin value of the second segment, here the "RAM" segment, will be the above                     #
+# mentioned user input value.                                                                           #
+# The length of the RAM segment will be calculated from the original length                             #
+# subtracted by the length of the ROM segment.                                                          #
+# Afterwards, the end adress of the RAM segment equals it's start adress added to the                   #
+# just calculated RAM length                                                                            #
+#                                                                                                       #
 # If we take aboves example and have the user input be "0x3000" we get the following calculations:      #
 # New ROM Origin    : 0x50                                                                              #
 # New ROM Length    : 0x3000 - 0x50 = 0x2FB0                                                            #
