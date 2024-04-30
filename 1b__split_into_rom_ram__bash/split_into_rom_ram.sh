@@ -103,7 +103,7 @@ old_length_hex_value="${ADDR[7]//$comma}"
 # memory_segment : ORIGIN = 0x50, LENGTH = 0x7FB0                                                       #
 # This resembles the following segment:                                                                 #
 #                                                                                                       #
-#         0x8000 |---------------------|   													            #         
+#         0x8000 |---------------------|                                                                #         
 #                |                     |                                                                #
 #                |                     |                                                                #
 #                |                     |                                                                #
