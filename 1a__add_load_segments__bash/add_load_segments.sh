@@ -32,6 +32,8 @@ flag=0
 find_line=0
 block_read=0
 end_flag=0
+end_memory_line=""
+empty_line="\ "
 
 ######################################################
 # Go through input file and find all lines to change #
@@ -54,49 +56,37 @@ for i in $section_list; do
 			fi
 		fi
 		
-		# Find the line where the __*_end pointer is
-		if [[ flag -eq 1 ]]; then
-			if [[ $line =~ ^.*__.*_end ]]; then
-				find_line=$line_counter
-				#echo "Line where __*_end ist: $find_line"
-				flag=0
-				block_read=1
-				end_flag=1
-			fi
-		fi
-		
 		# Find the last line of the section
-		if [[ end_flag -eq 1 ]]; then
+		if [[ flag -eq 1 ]]; then
 			if [[ $line =~ ^}+.* ]]; then
 				end_line=$line_counter
+				end_memory_line=$line
 				#echo "End line is at: $end_line"
 				#echo " "
-				end_flag=0
+				flag=0
 			fi
 		fi
 		
 	done < $input_file
 	
 	# Construct Strings that are being inserted into the input file
-	section_start_string=".$i : AT ( __${i}_end) {"
-	align_string="\ \ \ . = ALIGN(4);"
-	provide_string="PROVIDE (__load_${i}_start = LOADADDR(.${i}));"
-	
+	section_start_string=".$i : AT ( __load_${i}_start) {"
+
+	# Construct new Section
+	new_section_first_line=".load_${i} (NOLOAD) : {"
+	next_line_one="\ \ \ . = ALIGN(4);"
+	next_line_two="\ \ \ __load_${i}_start = .;"
+	next_line_three="\ \ \ . += SIZEOF(.${i});"
+
 	# Input the Strings
-	sed -i "${end_line}a ${provide_string}" $input_file
 	sed -i "${first_section_line}s/.*/${section_start_string}/" $input_file
-	sed -i "${find_line}i ${align_string}" $input_file
-	
-	# Some logical outputs for the user
-	echo "For ${i}:"
-	echo "-------------"
-	echo "Line of first section: ${first_section_line}"
-	echo "First section line changed to: ${section_start_string}"
-	echo "Line with __${i}_end found: ${find_line}"
-	echo "Line insert above: ${align_string}"
-	echo "Last line of ${i} section found: ${end_line}"
-	echo "Line insert below: ${provide_string}"
-	echo " "
+	sed -i "${end_line}s/.*/${end_memory_line}/" $input_file
+	sed -i "${end_line}a ${end_memory_line}" $input_file
+	sed -i "${end_line}a ${next_line_three}" $input_file
+	sed -i "${end_line}a ${next_line_two}" $input_file
+	sed -i "${end_line}a ${next_line_one}" $input_file
+	sed -i "${end_line}a ${new_section_first_line}" $input_file
+	sed -i "${end_line}a ${empty_line}" $input_file
 	
 	# Reset counter and flag variables
 	line_counter=0
