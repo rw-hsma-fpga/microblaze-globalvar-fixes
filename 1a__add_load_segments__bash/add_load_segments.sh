@@ -34,6 +34,7 @@ block_read=0
 end_flag=0
 end_memory_line=""
 empty_line="\ "
+first_line=""
 
 ######################################################
 # Go through input file and find all lines to change #
@@ -50,6 +51,7 @@ for i in $section_list; do
 				IFS=' ' read -ra line_array <<< "$line"
 				if [[ ${line_array[0]} =~ ^.${i}$ ]]; then
 					first_section_line=$line_counter
+					first_line=$line
 					#echo "First section Line: $first_section_line"
 					flag=1
 				fi
@@ -87,6 +89,14 @@ for i in $section_list; do
 	sed -i "${end_line}a ${next_line_one}" $input_file
 	sed -i "${end_line}a ${new_section_first_line}" $input_file
 	sed -i "${end_line}a ${empty_line}" $input_file
+
+	# Output for the User
+	echo "For ${i}"
+	echo "-------------"
+	echo "First line at ${first_section_line} of section: ${first_line}"
+	echo "Line ${first_section_line} changed to: ${section_start_string}"
+	echo "Last line of section changed to: ${end_memory_line}"
+	echo "New Section inserted below section .${i}"
 	
 	# Reset counter and flag variables
 	line_counter=0
