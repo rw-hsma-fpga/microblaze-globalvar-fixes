@@ -97,6 +97,7 @@ for i in $section_list; do
 	echo "Line ${first_section_line} changed to: ${section_start_string}"
 	echo "Last line of section changed to: ${end_memory_line}"
 	echo "New Section inserted below section .${i}"
+	echo " "
 	
 	# Reset counter and flag variables
 	line_counter=0
