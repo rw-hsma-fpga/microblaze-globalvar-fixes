@@ -15,8 +15,8 @@ as described in our FPL2024 paper: (add DOI)</p>
 <h3>3. HDL module for real write protection to ROM segment from (1b)</h3>
 <h2> </h2>
 <h2>Detailed descriptions</h2>
-<h3>1a - Add Load Segments</h3>
-<p>The <strong>add_load_segments.sh</strong> script creates new sections in the linker script.
+<h3>1a - Add load sections</h3>
+<p>The <strong>add_load_sections.sh</strong> script creates new sections in the linker script.
 These sections are then used by the <em><strong>.data</strong></em>, <em><strong>.sdata</strong></em> and <em><strong>.tdata</strong></em> sections as <em>load</em> sections.
 For example the line</p>
 <pre><code class="language-bash">.data : AT ( __load_data_start) {
@@ -24,7 +24,7 @@ For example the line</p>
 <p>defines that all <em><strong>.data</strong></em> information is stored in the new section <em><strong>.load_data</strong></em>.
 Later, the contents of the <em><strong>.load_data</strong></em> section are then copied to the <em><strong>.data</strong></em> section with the code from <em>2a</em> or <em>2b</em>.</p>
 <p>Use the script as follows:</p>
-<pre><code class="language-bash">./add_load_segments.sh &lt;linkerscript.ld&gt; 
+<pre><code class="language-bash">./add_load_sections.sh &lt;linkerscript.ld&gt; 
 </code></pre>
 <h3>1b - Split into RAM and ROM</h3>
 <p>The bash script <strong>split_into_ram_rom.sh</strong> splits a single BlockRAM memory segment in the provided linker script into two logical segments labeled <em><strong>mbRAM</strong></em> and <em><strong>mbROM</strong></em>.
@@ -52,5 +52,5 @@ int main()
 <p>To be able to compile the library, paths to the <em><strong>mb-gcc</strong></em> tools must be known by setting the Vitis environment variables.</p>
 <p>After successful compilation, the script will produce an option string that must be added to the Microblaze application’s linker arguments.</p>
 <h3>3 - Add real write protection to ROM segment</h3>
-<p>In case of using <strong>1b</strong> to move sections to a logical ROM segment, it is still necessary to make the segment read-only in hardware. The complete process is explained in <a href="3___rdonly_addrfilter__vhdl/HOWTO.md">HOWTO.md</a>.</p>
+<p>In case of using <strong>1b</strong> to move sections to a logical ROM segment, it is still necessary to make the segment read-only in hardware. The complete process is explained in <a href="3___rdonly_addrfilter__vhdl/HOWTO.html">HOWTO.html</a>.</p>
 </body></html>

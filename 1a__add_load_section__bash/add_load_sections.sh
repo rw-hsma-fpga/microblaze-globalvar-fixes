@@ -6,7 +6,7 @@
 
 if [[ -z "$1" ]]; then
 	echo "Input File is missing!" 
-	echo "Usage ./add_load_segments.sh <inputfile>"
+	echo "Usage ./add_load_sections.sh <inputfile>"
 	exit 1
 fi
 

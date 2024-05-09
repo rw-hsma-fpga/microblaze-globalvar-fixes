@@ -17,9 +17,9 @@ as described in our FPL2024 paper: (add DOI)
 
 ## Detailed descriptions
 
-### 1a - Add Load Segments
+### 1a - Add load sections
 
-The **add_load_segments.sh** script creates new sections in the linker script.
+The **add_load_sections.sh** script creates new sections in the linker script.
 These sections are then used by the ***.data***, ***.sdata*** and ***.tdata*** sections as *load* sections. 
 For example the line
 ```bash
@@ -33,7 +33,7 @@ Later, the contents of the ***.load_data*** section are then copied to the ***.d
 Use the script as follows:
 
 ```bash
-./add_load_segments.sh <linkerscript.ld> 
+./add_load_sections.sh <linkerscript.ld> 
 ```
 
 ### 1b - Split into RAM and ROM 
