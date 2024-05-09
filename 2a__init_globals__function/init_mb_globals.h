@@ -1,11 +1,14 @@
-#ifndef INIT_MB_GLOBALS
-#define INIT_MB_GLOBALS
+#ifndef INIT_MB_GLOBALS_H
+#define INIT_MB_GLOBALS_H
 
 
 /*  include this in your main() source with  #include "init_mb_globals.h"  */
 /*  init_mb_globals();  should be your first statement in main()           */
 
 
+
+/* Weak symbols: if no __load* symbols are found, no copies will be attempted. */
+/* This will still compile and link without a modified linker script.          */
 extern int __attribute__((weak)) __data_start;
 extern int __attribute__((weak)) __data_end;
 extern int __attribute__((weak)) __load_data_start;
@@ -46,4 +49,4 @@ void init_mb_globals(void)
 }
 
 
-#endif // INIT_MB_GLOBALS
+#endif // INIT_MB_GLOBALS_H

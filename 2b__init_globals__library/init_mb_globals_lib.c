@@ -1,3 +1,6 @@
+/* Weak symbols: if no __load* symbols are found, no copies will be attempted. */
+/* This will still compile and link without a modified linker script.          */
+
 extern int __attribute__((weak)) __data_start;
 extern int __attribute__((weak)) __data_end;
 extern int __attribute__((weak)) __load_data_start;

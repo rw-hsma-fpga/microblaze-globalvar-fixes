@@ -21,7 +21,7 @@ then
 				ls -l libinitmbglobals.a
 				echo
 
-				echo "Add the following line to your Miscellanous mb-gcc linker settings:"
+				echo "Add the following line to your Miscellaneous mb-gcc linker settings:"
 				THISPATH=$(pwd)
 				echo
 				echo " -Wl,-whole-archive  ${THISPATH}/libinitmbglobals.a  -Wl,-no-whole-archive "
