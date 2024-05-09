@@ -5,7 +5,16 @@ as described in our FPL2024 paper:
 
 ## 1a) Add Load Segments
 
-**add_load_segments.sh** 
+The **add_load_segments.sh** script creates new sections in the linker script.
+These sections are then used by the .data, .sdata and .tdata sections as load sections. 
+For example the line
+```bash
+.data : AT ( __load_data_start) {
+```
+
+defines that all .data information is stored in the new section .load_data. 
+Later, the contents of the .load_data section are then copied to the .data section with the 2a) or 2b) presented solutions.
+ 
 
 Use the script as follows:
 
@@ -22,6 +31,10 @@ The CLI call looks like the following:
 ```bash
 ./split_into_ram_rom.sh <linkerscript.ld> <hex-value>
 ```
+
+For example, for a new origin address with input **0x3000** the splitting would look something like:
+
+![Split_Ram_Rom](1b__split_into_rom_ram__bash/split_ram_rom.png)
 
 For further information on how the script works, see 
 [split_into_ram_rom script](1b__split_into_rom_ram__bash/split_into_rom_ram.sh)
