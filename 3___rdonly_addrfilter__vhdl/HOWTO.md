@@ -27,7 +27,7 @@
 		* dlmb_bram_if_cntlr (data BRAM controller)
 		* lmb_bram (dual-port BlockRAM with LMB ports)
 
-<img src="add_rdonly.png" width="75%">
+<img src="add_rdonly.png" style="width:60em">
 		
 5. Integrate **rdonly_addrfilter_v1_0**, resulting in the picture above:
 	* Arrange LMB blocks and **rdonly_addrfilter_v1_0** roughly as shown
