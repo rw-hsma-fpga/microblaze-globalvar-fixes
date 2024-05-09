@@ -21,6 +21,14 @@ echo "File to change: $input_file"
 echo "------------------------------------"
 echo " "
 
+###################################
+# Create copy of old linkerscript #
+###################################
+
+cp $input_file "${input_file}.old"
+echo "$input_file saved to ${input_file}.old"
+echo " "
+
 ##########################################
 # Declare all counter and flag variables #
 ##########################################
@@ -95,8 +103,7 @@ for i in $section_list; do
 	echo "-------------"
 	echo "First line at ${first_section_line} of section: ${first_line}"
 	echo "Line ${first_section_line} changed to: ${section_start_string}"
-	echo "Last line of section changed to: ${end_memory_line}"
-	echo "New Section inserted below section .${i}"
+	echo "New Section .load_${i} inserted below section .${i}"
 	echo " "
 	
 	# Reset counter and flag variables
