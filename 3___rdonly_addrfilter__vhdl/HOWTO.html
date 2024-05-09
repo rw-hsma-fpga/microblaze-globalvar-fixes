@@ -1,0 +1,116 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title></head><body><h2>How to make part of your LMB memory <em>read-only</em></h2>
+<ol>
+<li>
+<p>Starting point:</p>
+<ul>
+<li>An existing Vivado project <em>with</em></li>
+<li>a Block Design with a Microblaze processor <em>with</em></li>
+<li>an LMB (Local Memory Bus) sub-block (plus sign, darker shade of blue)</li>
+</ul>
+</li>
+<li>
+<p>Add the VHDL file <strong>rdonly_addrfilter.vhd</strong>  to your Vivado project:</p>
+<ul>
+<li>In the <em>Sources</em> window, click the <code>+</code> sign.</li>
+<li><em>Add or create design sources</em> -&gt; <em>Next</em></li>
+<li><em>Add Files</em></li>
+<li>Choose <strong>rdonly_addrfilter.vhd</strong> and <em>OK</em></li>
+<li><em>Finish</em></li>
+</ul>
+</li>
+<li>
+<p>Add the VHDL file to the block diagram:</p>
+<ol>
+<li>In the <em>Sources</em> window, <em>Right-click</em> on <strong>rdonly_addrfilter.vhd</strong></li>
+</ol>
+<ul>
+<li>Choose <em>Add Module to Block Design</em></li>
+<li><strong>rdonly_addrfilter_v1_0</strong> is now a block with an <em>RTL</em> logo</li>
+</ul>
+</li>
+<li>
+<p><em>Ungroup</em> your LMB subblock:</p>
+<ul>
+<li><em>Right mouse button</em> on the LMB sub-block</li>
+<li><em>Ungroup Hierarchy</em></li>
+<li>The block diagram now has 5 new individual blocks:
+<ul>
+<li>ilmb_v10 (instruction bus)</li>
+<li>dlmb_v10 (data bus)</li>
+<li>ilmb_bram_if_cntlr (instruction BRAM controller)</li>
+<li>dlmb_bram_if_cntlr (data BRAM controller)</li>
+<li>lmb_bram (dual-port BlockRAM with LMB ports)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<img src="add_rdonly.png" style="width:60em">
+<ol start="5">
+<li>
+<p>Integrate <strong>rdonly_addrfilter_v1_0</strong>, resulting in the picture above:</p>
+<ul>
+<li>
+<p>Arrange LMB blocks and <strong>rdonly_addrfilter_v1_0</strong> roughly as shown</p>
+</li>
+<li>
+<p>Expand <strong>dlmb_bram_if_cntlr</strong>’s <em>BRAM_PORT</em> and  <strong>lmb_bram</strong>’s <em>BRAM_PORTA</em> with <code>+</code></p>
+</li>
+<li>
+<p>Connect</p>
+<ul>
+<li><strong>rdonly_addrfilter_v1_0</strong>’s input <em>addr_in_[0:31]</em> to <strong>dlmb_bram_if_cntlr</strong>’s  output <em>BRAM_Addr_A[0:31]</em></li>
+<li><strong>lmb_bram</strong>’s input <em>addra[31:0]</em> also to <strong>dlmb_bram_if_cntlr</strong>’s  output <em>BRAM_Addr_A[0:31]</em></li>
+<li><strong>rdonly_addrfilter_v1_0</strong>’s input <em>wren_in[0:3]</em> to <strong>dlmb_bram_if_cntlr</strong>’s  output <em>BRAM_WEN_A[0:3]</em></li>
+<li><strong>rdonly_addrfilter_v1_0</strong>’s output <em>wren_out[3:0]</em> to <strong>lmb_bram</strong>’s input <em>wea[3:0]</em></li>
+</ul>
+</li>
+<li>
+<p>Hide full ports again; the individually connected ports are still visible as shown  in the image.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><em>Double click</em> on <strong>rdonly_addrfilter_v1_0</strong> to set the access parameters:</p>
+<ul>
+<li>Set <code>Rdwr Startaddr</code> to the beginning of the desired writeable/RAM range.
+<ul>
+<li>Write accesses below that address will be blocked, so the lower range will behave like ROM.</li>
+<li>The default setting <code>0x00000000</code> means all memory acts as RAM as if the filter had not been added.</li>
+<li>“Round” hexadecimal numbers like <code>0x3000</code> will lead to less logic.</li>
+</ul>
+</li>
+<li>Set <code>Memsize Log2</code> to the number of bits required for the LMB BRAM size, e.g.:
+<ul>
+<li>14 : 16 KBytes</li>
+<li>16 : 64 KBytes</li>
+<li>17 : 128 KBytes (default, maximum size available in <em>Block Automation</em>)</li>
+<li>20 : 1 MByte<br />
+This is again intended to minimize compare logic; pick a larger value to be on the safe side and avoid aliasing the ROM window to higher addresses.</li>
+</ul>
+</li>
+<li>Save the settings with <em>OK</em>. The address filtering will be active after rebuilding the bitstream.
+<ul>
+<li>Be aware of <em>Vitis’</em> poor record of updating bitstreams in existing software projects. Create a new platform or even a new <em>Vitis</em> workspace to be sure.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><em>OPTIONAL</em>: For cosmetic reasons and easier handling, create a memory sub-block again:</p>
+<ul>
+<li>Mark all 6 blocks together</li>
+<li><em>Right click</em> -&gt; <em>Create hierachy</em></li>
+<li>Specify cell name <strong>LMB</strong>, click <em>Ok</em></li>
+<li>Open the sub-block with the <code>+</code> sign again</li>
+<li>Click exactly on the pin <strong>LMB_M</strong> at the sub-block edge
+<ul>
+<li>In the window <em>sub-block properties</em> on the left, change the name <strong>LMB_M</strong> to <strong>DLMB</strong> or <strong>ILMB</strong> depending on the connected port</li>
+</ul>
+</li>
+<li>Repeat with the pin <strong>LMB_M1</strong></li>
+<li>Close the sub-block with the <code>-</code> sign</li>
+</ul>
+</li>
+</ol>
+</body></html>

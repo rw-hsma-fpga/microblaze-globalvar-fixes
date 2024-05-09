@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title></head><body><h1>microblaze-globalvar-fixes</h1>
+<p>Suggested fixes for clobbered global variables after reset on a Microblaze soft processor system,
+as described in our FPL2024 paper: (add DOI)</p>
+<p>This repository provides three types of code to fix the related issues:</p>
+<h3>1. Bash scripts to modify the Vitis-generated linker script to include load copy sections for global, initialized variables. There are two options to choose from:</h3>
+<ul>
+<li><strong>1a</strong> - Add load copies of .data sections in the same monolithic BlockRAM segment</li>
+<li><strong>1b</strong> - Split the memory into a ROM and RAM segment and assign load copies to ROM</li>
+</ul>
+<h3>2. Code to copy/re-initialize the data segments from the load copies after each reset. There are again two ways to do this:</h3>
+<ul>
+<li><strong>2a</strong> - Explicitly call a function from a header file at the start of your program</li>
+<li><strong>2b</strong> - Link a static library that does the copy on each reset.</li>
+</ul>
+<h3>3. HDL module for real write protection to ROM segment from (1b)</h3>
+<h2>Code descriptions</h2>
+<h3>1a - Add Load Segments</h3>
+<p>The <strong>add_load_segments.sh</strong> script creates new sections in the linker script.
+These sections are then used by the .data, .sdata and .tdata sections as load sections.
+For example the line</p>
+<pre><code class="language-bash">.data : AT ( __load_data_start) {
+</code></pre>
+<p>defines that all .data information is stored in the new section .load_data.
+Later, the contents of the .load_data section are then copied to the .data section with the 2a) or 2b) presented solutions.</p>
+<p>Use the script as follows:</p>
+<pre><code class="language-bash">./add_load_segments.sh &lt;linkerscript.ld&gt; 
+</code></pre>
+<h3>1b - Split into RAM and ROM</h3>
+<p>The bash script <strong>split_into_ram_rom.sh</strong> splits a single BlockRAM memory segment in a provided linker script into two logical segments labeled “mbRAM” and “mbROM”.
+Required for the command are the linkerscript to change and a hex-value which represents the start adress of the writeable (RAM) portion.
+The CLI call looks like the following:</p>
+<pre><code class="language-bash">./split_into_ram_rom.sh &lt;linkerscript.ld&gt; &lt;hex-value&gt;
+</code></pre>
+<p>For example, for a new origin address with input <strong>0x3000</strong> the splitting would look something like:</p>
+<img src="1b__split_into_rom_ram__bash/split_ram_rom.png" style="width:50em">
+<p>For further information on how the script works, see
+<a href="1b__split_into_rom_ram__bash/split_into_rom_ram.sh">split_into_rom_ram.sh</a></p>
+<h3>2a - Init Globals from header function</h3>
+<p>The first way to load the new globals from the linkerscript is to include the headerfile <a href="2a__init_globals__function/init_mb_globals.h">init_mb_globals.h</a>. Afterwards, this function needs to be called at the start of main():</p>
+<pre><code class="language-c">int main()
+{
+   init_mb_globals();  
+   ...
+</code></pre>
+<h3>2b - Init Globals from library</h3>
+<p>The second way is to run the <a href="2b__init_globals__library/make_initglobals_lib.sh">make_initglobals_lib.sh</a> script. This will compile a static library from the <a href="2b__init_globals__library/init_mb_globals_lib.c">init_mb_globals_lib.c</a> source file which will automatically call the function to initialize the globals.</p>
+<h3>3 - Add real write protection to ROM segment</h3>
+<p>In case of using 1b), it is still necessary to make the ROM memory segment read-only in hardware. The complete guide is explained in <a href="3___rdonly_addrfilter__vhdl/HOWTO.md">HOWTO.md</a></p>
+</body></html>
