@@ -1,6 +1,6 @@
 # microblaze-globalvar-fixes
 Suggested fixes for clobbered global variables after reset on a Microblaze soft processor system,
-as described in our FPL2024 paper: (add DOI)
+as described in our FPL2024 poster: (TODO add poster)
 
 #### This repository provides three types of code to fix the related issues:
 ### 1. Bash scripts to modify the Vitis-generated linker script to include load copy sections for global, initialized variables. There are two options to choose from:
