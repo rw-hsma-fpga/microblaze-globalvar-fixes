@@ -1,8 +1,10 @@
-# microblaze-globalvar-fixes
-Suggested fixes for clobbered global variables after reset on a Microblaze soft processor system,
-as described in our FPL2024 poster: (TODO add poster)
+# Fixing the initialization of global (static) variables for AMD/Xilinx Microblaze processors
 
-#### This repository provides three types of code to fix the related issues:
+As we explain in our [Poster](POSTER/BRAMglobalvars_Poster_FPL24.pdf) for the ***International Conference on Field-Programmable Logic and Applications 2024 (FPL2024)***, most FPGA vendors' soft processors don't properly re-initialize global variables after a soft reset.  
+
+You can also read our detailed [Paper](PAPER/BRAMglobalvars_FullPaper.pdf) on the issue and our proposed workarounds.
+
+### This repository provides three types of code to fix the described issues:
 ### 1. Bash scripts to modify the Vitis-generated linker script to include load copy sections for global, initialized variables. There are two options to choose from:
 * **1a** - Add load copies of .data sections in the same monolithic BlockRAM segment
 * **1b** - Split the memory into logical ROM and RAM segments and assign load copies to ROM

@@ -1,7 +1,7 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title></head><body><h1>microblaze-globalvar-fixes</h1>
-<p>Suggested fixes for clobbered global variables after reset on a Microblaze soft processor system,
-as described in our FPL2024 paper: (add DOI)</p>
-<h4>This repository provides three types of code to fix the related issues:</h4>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title></title></head><body><h1>Fixing the initialization of global (static) variables for AMD/Xilinx Microblaze processors</h1>
+<p>As we explain in our <a href="POSTER/BRAMglobalvars_Poster_FPL24.pdf">Poster</a> for the <em><strong>International Conference on Field-Programmable Logic and Applications 2024 (FPL2024)</strong></em>, most FPGA vendors’ soft processors don’t properly re-initialize global variables after a soft reset.</p>
+<p>You can also read our detailed <a href="PAPER/BRAMglobalvars_FullPaper.pdf">Paper</a> on the issue and our proposed workarounds.</p>
+<h3>This repository provides three types of code to fix the described issues:</h3>
 <h3>1. Bash scripts to modify the Vitis-generated linker script to include load copy sections for global, initialized variables. There are two options to choose from:</h3>
 <ul>
 <li><strong>1a</strong> - Add load copies of .data sections in the same monolithic BlockRAM segment</li>
@@ -52,5 +52,5 @@ int main()
 <p>To be able to compile the library, paths to the <em><strong>mb-gcc</strong></em> tools must be known by setting the Vitis environment variables.</p>
 <p>After successful compilation, the script will produce an option string that must be added to the Microblaze application’s linker arguments.</p>
 <h3>3 - Add real write protection to ROM segment</h3>
-<p>In case of using <strong>1b</strong> to move sections to a logical ROM segment, it is still necessary to make the segment read-only in hardware. The complete process is explained in <a href="3___rdonly_addrfilter__vhdl/HOWTO.html">HOWTO.html</a>.</p>
+<p>In case of using <strong>1b</strong> to move sections to a logical ROM segment, it is still necessary to make the segment read-only in hardware. The complete process is explained in <a href="3___rdonly_addrfilter__vhdl/HOWTO.md">HOWTO.md</a>.</p>
 </body></html>
