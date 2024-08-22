@@ -218,11 +218,22 @@ then
 	# Replace all memory segments with ram or rom based on the lists #
 	##################################################################
 
-	# TODO Willenberg, fill the list with the missing sections
-
-	ram_list=".bss .sbss .tbss .heap .stack" 
-	rom_list=".text .rodata .sbss2 .sdata2 .note.gnu.build-id .init .fini .ctors .dtors .got .got1 .got2 .eh_frame .jcr .gcc_except_table"
+	rom_list=".text .text.init .rodata .srodata .sbss2 .sdata2 .note.gnu.build-id .drvcfg_sec .init .fini .init_array .fini_array .ctors .dtors .got .got1 .got2 .eh_frame .jcr .gcc_except_table"
 	ram_rom_list=".data .sdata .tdata"
+	ram_list="" 
+
+	# Fill ram list with everything that is not rom or ram_rom(loadable)
+	matchstr="^\.[-A-Za-z0-9._]+[ ]:|(NOLOAD)"
+	non_ram_list=$(echo " ${rom_list} ${ram_rom_list} ")
+	while IFS= read -r line 
+	do 
+		if [[ $line =~ $matchstr ]]; then
+	        line=$(echo ${line} | cut -d " " -f1)
+			if echo "$non_ram_list" | grep -q "[ ]${line}[ ]" ; then : ; else
+				ram_list=$(echo "${ram_list} ${line}")
+			fi
+		fi 
+	done < $input_file
 
 	rom="} > ${rom_name}"
 	ram="} > ${ram_name}"
@@ -413,12 +424,12 @@ then
 	block_load_data_read=0
 	load_data_flag=0
 	load_data_line=0
-	load_data_list="data sdata tdata"
 
 	printf "Inserting load_data_start at data sdata and tdata sections:\n"
 	echo   "-----------------------------------------------------------"
 
-	for c in $load_data_list; do 
+	for c in $ram_rom_list; do
+		c="${c:1}" 
 		while IFS= read -r line 
 		do
 			((load_data_line_counter++))
