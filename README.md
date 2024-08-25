@@ -15,6 +15,11 @@ You can also read our detailed [Paper](PAPER/BRAMglobalvars_FullPaper.pdf) on th
 
 ### 3. HDL module for real write protection to ROM segment from (1b)
 
+***Current status:*** *We've tested everything for the classic Microblaze processor up to the current 2024.1 tools, both with Vitis Classic IDE (Eclipse-based) and Vitis Unified IDE (based on VS Code/Eclipse Theia)*
+ 
+*We are still working on full support for the Microblaze-V (RISC-V based) runtime library*
+
+*Contact r.willenberg@hs-mannheim.de if you have any questions.*
 ## &nbsp;
 
 ## Detailed descriptions
@@ -81,3 +86,4 @@ After successful compilation, the script will produce an option string that must
 ### 3 - Add real write protection to ROM segment
 
 In case of using **1b** to move sections to a logical ROM segment, it is still necessary to make the segment read-only in hardware. The complete process is explained in [HOWTO.md](3___rdonly_addrfilter__vhdl/HOWTO.md).
+
