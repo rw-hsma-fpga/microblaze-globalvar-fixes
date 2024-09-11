@@ -37,7 +37,7 @@ then
 	input_file=$1
 	input_origin_adress=$2
 
-	echo -e "Two Segement Split requested with following inputs"
+	echo -e "Two Segment Split requested with following inputs"
 	echo    "--------------------------------------------------"
 	echo -e "File to change:           \t $input_file "
 	echo -e "New origin adress of ram: \t $input_origin_adress"
@@ -50,6 +50,69 @@ then
 	cp $input_file "${input_file}.old"
 	echo "$input_file saved to ${input_file}.old"
 	echo " "
+
+	######################################################
+	# Find .fini and append .init_/fini_array for RISC-V #
+	######################################################
+
+	# Reset counter and flag variables
+	line_counter=0
+	flag=0
+	find_line=0
+	block_read=0
+
+	while IFS= read -r line
+	do	
+		((line_counter++))
+			
+		# Find the first line of the section
+		if [[ $block_read -eq 0 ]]; then
+			if [[ $line =~ ^\.fini\s* ]]; then
+				IFS=' ' read -ra line_array <<< "$line"
+				if [[ ${line_array[0]} =~ ^.fini$ ]]; then
+					first_section_line=$line_counter
+					first_line=$line
+					flag=1
+				fi
+			fi
+		fi
+		
+		# Find the last line of the section
+		if [[ flag -eq 1 ]]; then
+			if [[ $line =~ ^}+.* ]]; then
+				end_line=$line_counter
+				end_memory_line=$line
+				flag=2
+			fi
+		fi
+		
+	done < $input_file
+
+	if [[ flag -eq 2 ]]; then	
+		# Input the Strings
+		sed -i "${end_line}a ${end_memory_line}" $input_file
+		sed -i "${end_line}a \   PROVIDE_HIDDEN (__fini_array_end = \.);" $input_file
+		sed -i "${end_line}a \   KEEP (\*(\.fini_array\*))" $input_file
+		sed -i "${end_line}a \   KEEP (\*(SORT(\.fini_array\.\*)))" $input_file
+		sed -i "${end_line}a \   PROVIDE_HIDDEN (__fini_array_start = \.);" $input_file
+		sed -i "${end_line}a \.fini_array : {" $input_file
+		sed -i "${end_line}a \ " $input_file
+
+		sed -i "${end_line}a ${end_memory_line}" $input_file
+		sed -i "${end_line}a \   PROVIDE_HIDDEN (__init_array_end = \.);" $input_file
+		sed -i "${end_line}a \   KEEP (\*(\.init_array\*))" $input_file
+		sed -i "${end_line}a \   KEEP (\*(SORT(\.init_array\.\*)))" $input_file
+		sed -i "${end_line}a \   PROVIDE_HIDDEN (__init_array_start = \.);" $input_file
+		sed -i "${end_line}a \.init_array : {" $input_file
+		sed -i "${end_line}a \ " $input_file
+
+		# Output for the User
+		echo "After Line ${end_line}:"
+		echo "---------------"
+		echo "New sections .init_array and .fini_array (modern constructors"
+		echo "for RISC-V etc.) inserted below sections .init/.fini"
+		echo " "
+	fi
 
 	####################################
 	# Searching for the Memory Section #
