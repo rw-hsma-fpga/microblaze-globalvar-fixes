@@ -52,6 +52,86 @@ then
 	echo " "
 
 	######################################################
+	# Cut misplaced .init_/fini_array for RISC-V (vscode)#
+	######################################################
+
+	while IFS= read -r line
+	do	
+		((line_counter++))
+			
+		# Find the first line of the init_array section
+		if [[ $block_read -eq 0 ]]; then
+			if [[ $line =~ ^\.init_array\s* ]]; then
+				IFS=' ' read -ra line_array <<< "$line"
+				if [[ ${line_array[0]} =~ ^.init_array$ ]]; then
+					first_section_line=$line_counter
+					flag=1
+				fi
+			fi
+		fi
+		
+		# Find the last line of the init_array section
+		if [[ flag -eq 1 ]]; then
+			if [[ $line =~ ^}+.* ]]; then
+				end_line=$line_counter
+				flag=2
+			fi
+		fi
+
+	done < $input_file
+
+	if [[ flag -eq 2 ]]; then	
+		# Delete lines
+		for ((i = $first_section_line ; i <= $end_line ; i++)); do
+			sed -i "${first_section_line}d" $input_file
+		done
+	fi
+
+	# Reset counter and flag variables
+	line_counter=0
+	flag=0
+	find_line=0
+	block_read=0
+
+	while IFS= read -r line
+	do	
+		((line_counter++))
+			
+		# Find the first line of the fini_array section
+		if [[ $block_read -eq 0 ]]; then
+			if [[ $line =~ ^\.fini_array\s* ]]; then
+				IFS=' ' read -ra line_array <<< "$line"
+				if [[ ${line_array[0]} =~ ^.fini_array$ ]]; then
+					first_section_line=$line_counter
+					flag=1
+				fi
+			fi
+		fi
+		
+		# Find the last line of the fini_array section
+		if [[ flag -eq 1 ]]; then
+			if [[ $line =~ ^}+.* ]]; then
+				end_line=$line_counter
+				flag=2
+			fi
+		fi
+
+	done < $input_file
+
+	if [[ flag -eq 2 ]]; then	
+		# Delete lines
+		for ((i = $first_section_line ; i <= $end_line ; i++)); do
+			sed -i "${first_section_line}d" $input_file
+		done
+	fi
+
+	# Reset counter and flag variables
+	line_counter=0
+	flag=0
+	find_line=0
+	block_read=0
+
+	######################################################
 	# Find .fini and append .init_/fini_array for RISC-V #
 	######################################################
 

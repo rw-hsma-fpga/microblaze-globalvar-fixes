@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rm *.o
-rm *.a
+rm *.o 2> /dev/null
+rm *.a 2> /dev/null
 
 echo
 echo "Existing build artifacts deleted."

@@ -119,6 +119,86 @@ then
 	done
 
 	######################################################
+	# Cut misplaced .init_/fini_array for RISC-V (vscode)#
+	######################################################
+
+	while IFS= read -r line
+	do	
+		((line_counter++))
+			
+		# Find the first line of the init_array section
+		if [[ $block_read -eq 0 ]]; then
+			if [[ $line =~ ^\.init_array\s* ]]; then
+				IFS=' ' read -ra line_array <<< "$line"
+				if [[ ${line_array[0]} =~ ^.init_array$ ]]; then
+					first_section_line=$line_counter
+					flag=1
+				fi
+			fi
+		fi
+		
+		# Find the last line of the init_array section
+		if [[ flag -eq 1 ]]; then
+			if [[ $line =~ ^}+.* ]]; then
+				end_line=$line_counter
+				flag=2
+			fi
+		fi
+
+	done < $input_file
+
+	if [[ flag -eq 2 ]]; then	
+		# Delete lines
+		for ((i = $first_section_line ; i <= $end_line ; i++)); do
+			sed -i "${first_section_line}d" $input_file
+		done
+	fi
+
+	# Reset counter and flag variables
+	line_counter=0
+	flag=0
+	find_line=0
+	block_read=0
+
+	while IFS= read -r line
+	do	
+		((line_counter++))
+			
+		# Find the first line of the fini_array section
+		if [[ $block_read -eq 0 ]]; then
+			if [[ $line =~ ^\.fini_array\s* ]]; then
+				IFS=' ' read -ra line_array <<< "$line"
+				if [[ ${line_array[0]} =~ ^.fini_array$ ]]; then
+					first_section_line=$line_counter
+					flag=1
+				fi
+			fi
+		fi
+		
+		# Find the last line of the fini_array section
+		if [[ flag -eq 1 ]]; then
+			if [[ $line =~ ^}+.* ]]; then
+				end_line=$line_counter
+				flag=2
+			fi
+		fi
+
+	done < $input_file
+
+	if [[ flag -eq 2 ]]; then	
+		# Delete lines
+		for ((i = $first_section_line ; i <= $end_line ; i++)); do
+			sed -i "${first_section_line}d" $input_file
+		done
+	fi
+
+	# Reset counter and flag variables
+	line_counter=0
+	flag=0
+	find_line=0
+	block_read=0
+
+	######################################################
 	# Find .fini and append .init_/fini_array for RISC-V #
 	######################################################
 
@@ -152,18 +232,18 @@ then
 	if [[ flag -eq 2 ]]; then	
 		# Input the Strings
 		sed -i "${end_line}a ${end_memory_line}" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__fini_array_end = \.);" $input_file
+		sed -i "${end_line}a \   __fini_array_end = \.;" $input_file
 		sed -i "${end_line}a \   KEEP (\*(\.fini_array\*))" $input_file
 		sed -i "${end_line}a \   KEEP (\*(SORT(\.fini_array\.\*)))" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__fini_array_start = \.);" $input_file
+		sed -i "${end_line}a \   __fini_array_start = \.;" $input_file
 		sed -i "${end_line}a \.fini_array : {" $input_file
 		sed -i "${end_line}a \ " $input_file
 
 		sed -i "${end_line}a ${end_memory_line}" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__init_array_end = \.);" $input_file
+		sed -i "${end_line}a \   __init_array_end = \.;" $input_file
 		sed -i "${end_line}a \   KEEP (\*(\.init_array\*))" $input_file
 		sed -i "${end_line}a \   KEEP (\*(SORT(\.init_array\.\*)))" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__init_array_start = \.);" $input_file
+		sed -i "${end_line}a \   __init_array_start = \.;" $input_file
 		sed -i "${end_line}a \.init_array : {" $input_file
 		sed -i "${end_line}a \ " $input_file
 
