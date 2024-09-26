@@ -1,4 +1,4 @@
-# Fixing the initialization of global (static) variables for AMD/Xilinx Microblaze processors
+# Fixing the initialization of global (static) variables for AMD/Xilinx Microblaze(-V) processors
 
 As we explain in our [Poster](POSTER/BRAMglobalvars_Poster_FPL24.pdf) for the ***International Conference on Field-Programmable Logic and Applications 2024 (FPL2024)***, most FPGA vendors' soft processors don't properly re-initialize global variables after a soft reset.  
 
@@ -15,10 +15,8 @@ You can also read our detailed [Paper](PAPER/BRAMglobalvars_FullPaper.pdf) on th
 
 ### 3. HDL module for real write protection to ROM segment from (1b)
 
-***Current status:*** *We've tested everything for the classic Microblaze processor up to the current 2024.1 tools, both with Vitis Classic IDE (Eclipse-based) and Vitis Unified IDE (based on VS Code/Eclipse Theia)*
+***Current status:*** *We've tested everything both for the classic Microblaze processor and the new (RISC-V based) Microblaze-V core, up to the current 2024.1 tools, both with Vitis Classic IDE (Eclipse-based) and Vitis Unified IDE (based on VS Code/Eclipse Theia).*
  
-*We are still working on full support for the Microblaze-V (RISC-V based) runtime library*
-
 *Contact r.willenberg@hs-mannheim.de if you have any questions.*
 ## &nbsp;
 
@@ -75,13 +73,21 @@ int main()
 
 ### 2b - Init globals by linked library
 
-The second way is to compile the load function into a static library's *constructor* so that it is run before the ```main()``` function is entered. To build the library **init_mb_globals_lib.a**, source the script [make_initglobals_lib.sh](2b__init_globals__library/make_initglobals_lib.sh) like this:
-```bash
-source make_initglobals_lib.sh 
-```
-To be able to compile the library, paths to the ***mb-gcc*** tools must be known by setting the Vitis environment variables.
+The second way is to compile the load function into a static library's *constructor* so that it is run before the ```main()``` function is entered.
 
-After successful compilation, the script will produce an option string that must be added to the Microblaze application's linker arguments.
+To build the library **init_mb_globals_lib.a** for the classic Microblaze, source the script [make_MB_classic_lib.sh](2b__init_globals__library/make_MB_classic_lib.sh) like this:
+```bash
+source make_MB_classic_lib.sh 
+```
+
+To build the library **init_mbv_globals_lib.a** for the Microblaze-V, source the script [make_MB_V_lib.sh](2b__init_globals__library/make_MB_V_lib.sh) like this:
+```bash
+source make_MB_V_lib.sh 
+```
+
+To be able to compile the libraries, paths to the ***mb-gcc*** and/or ***riscv\*-gcc*** tools must be known by setting the Vitis environment variables.
+
+After successful compilation, the scripts will indicate options that must be added to the application project's linker arguments, formatted both for *Vitis Classic* and *Vitis Unified* IDE.
 
 ### 3 - Add real write protection to ROM segment
 
