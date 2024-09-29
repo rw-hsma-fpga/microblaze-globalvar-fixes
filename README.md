@@ -53,7 +53,7 @@ The CLI call looks like this:
 
 For example, for a new origin address with input **0x3000** the splitting would look something like:
 
-<img src="1b__split_into_rom_ram__bash/split_ram_rom.png" style="width:50em">
+<img src="1b__split_into_rom_ram__bash/diagram_ram_rom.png" style="width:50em">
 
 For further information on how the script works, see 
 [split_into_rom_ram.sh](1b__split_into_rom_ram__bash/split_into_rom_ram.sh)
