@@ -55,6 +55,12 @@ then
 	# Cut misplaced .init_/fini_array for RISC-V (vscode)#
 	######################################################
 
+	# Reset counter and flag variables
+	line_counter=0
+	flag=0
+	find_line=0
+	block_read=0
+
 	while IFS= read -r line
 	do	
 		((line_counter++))
@@ -135,12 +141,6 @@ then
 	# Find .fini and append .init_/fini_array for RISC-V #
 	######################################################
 
-	# Reset counter and flag variables
-	line_counter=0
-	flag=0
-	find_line=0
-	block_read=0
-
 	while IFS= read -r line
 	do	
 		((line_counter++))
@@ -171,18 +171,18 @@ then
 	if [[ flag -eq 2 ]]; then	
 		# Input the Strings
 		sed -i "${end_line}a ${end_memory_line}" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__fini_array_end = \.);" $input_file
+		sed -i "${end_line}a \   __fini_array_end = \.;" $input_file
 		sed -i "${end_line}a \   KEEP (\*(\.fini_array\*))" $input_file
 		sed -i "${end_line}a \   KEEP (\*(SORT(\.fini_array\.\*)))" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__fini_array_start = \.);" $input_file
+		sed -i "${end_line}a \   __fini_array_start = \.;" $input_file
 		sed -i "${end_line}a \.fini_array : {" $input_file
 		sed -i "${end_line}a \ " $input_file
 
 		sed -i "${end_line}a ${end_memory_line}" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__init_array_end = \.);" $input_file
+		sed -i "${end_line}a \   __init_array_end = \.;" $input_file
 		sed -i "${end_line}a \   KEEP (\*(\.init_array\*))" $input_file
 		sed -i "${end_line}a \   KEEP (\*(SORT(\.init_array\.\*)))" $input_file
-		sed -i "${end_line}a \   PROVIDE_HIDDEN (__init_array_start = \.);" $input_file
+		sed -i "${end_line}a \   __init_array_start = \.;" $input_file
 		sed -i "${end_line}a \.init_array : {" $input_file
 		sed -i "${end_line}a \ " $input_file
 
