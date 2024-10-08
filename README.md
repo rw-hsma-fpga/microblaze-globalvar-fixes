@@ -18,6 +18,12 @@ You can also read our detailed [Paper](PAPER/BRAMglobalvars_FullPaper.pdf) on th
 ***Current status:*** *We've tested everything both for the classic Microblaze processor and the new (RISC-V based) Microblaze-V core, up to the current 2024.1 tools, both with Vitis Classic IDE (Eclipse-based) and Vitis Unified IDE (based on VS Code/Eclipse Theia).*
  
 *Contact r.willenberg@hs-mannheim.de if you have any questions.*
+
+&nbsp;
+
+### *[Bonus: ELF into BIT scripts:](Bonus__ELFintoBIT_scripts)* ###
+*In Vitis 2024.1, AMD has removed the option to initialize the downloadable bitstream with Microblaze application code and data. We are providing scripts for the old and new Vitis IDEs to preserve this functionality.*
+
 ## &nbsp;
 
 ## Detailed descriptions
