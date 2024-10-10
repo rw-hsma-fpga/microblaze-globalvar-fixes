@@ -22,7 +22,7 @@ You can also read our detailed [Paper](PAPER/BRAMglobalvars_FullPaper.pdf) on th
 &nbsp;
 
 ### *[Bonus: ELF into BIT scripts:](Bonus__ELFintoBIT_scripts)* ###
-*In Vitis 2024.1, AMD has removed the option to initialize the downloadable bitstream with Microblaze application code and data. We are providing scripts for the old and new Vitis IDEs to preserve this functionality.*
+*For the Microblaze-V, AMD has removed the Vitis option to initialize the downloadable bitstream with Microblaze application code and data. We are providing scripts for the old and new Vitis IDEs to keep this important functionality alive.*
 
 ## &nbsp;
 
