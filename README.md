@@ -1,4 +1,4 @@
-# Fixing the initialization of global (static) variables for AMD/Xilinx Microblaze(-V) processors
+# Workarounds for flawed global variable handling in AMD Microblaze processors
 
 As we explain in our [Poster](POSTER/BRAMglobalvars_Poster_FPL24.pdf) for the ***International Conference on Field-Programmable Logic and Applications 2024 (FPL2024)***, most FPGA vendors' soft processors don't properly re-initialize global variables after a soft reset.  
 
