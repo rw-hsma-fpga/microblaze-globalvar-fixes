@@ -53,13 +53,22 @@ if args.workpath is not None:
 else:
     WSPATH = os.getcwd()
 
-LOCKPATH = WSPATH + "/.lock"
-OLDLOCKPATH = WSPATH + "/.oldlock"
 
-# Remove stupid workspace lock
-# if file .lock exists, rename it to .oldlock
-if os.path.isfile(LOCKPATH):
+# Remove stupid workspace lock - if file .lock exists, rename it to .oldlock
+LOCKPATH = ""
+OLDLOCKPATH = ""
+# first check for location since 2024.2
+if os.path.isfile(WSPATH + "/_ide/.wsdata/.lock"):
+    LOCKPATH = WSPATH + "/_ide/.wsdata/.lock"
+    OLDLOCKPATH = WSPATH + "/_ide/.wsdata/.oldlock"
     os.system("mv "+LOCKPATH+" "+OLDLOCKPATH)
+else:
+    # otherwise check for location in 2024.1
+    if os.path.isfile(WSPATH + "/.lock"):
+        LOCKPATH = WSPATH + "/.lock"
+        OLDLOCKPATH = WSPATH + "/.oldlock"
+        os.system("mv "+LOCKPATH+" "+OLDLOCKPATH)
+
 
 # Set Vitis workspace
 client = vitis.create_client()
@@ -117,6 +126,9 @@ for i in components:
                 MB_INSTANCE=comprepout[idx2+1:idx3]
                 MB_INSTANCE = ''.join(MB_INSTANCE.split())
                 print("MB instance   : " + MB_INSTANCE)
+
+# following functions don't need Vitis client anymore, can be closed
+client.close()
 
 # Find XSA file
 XSA_DIR = WSPATH+"/"+PLATFORMNAME+"/hw/"
